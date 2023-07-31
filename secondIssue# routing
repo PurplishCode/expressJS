@@ -1,0 +1,69 @@
+// Routing!
+
+const express = require('express');
+
+const app = express();
+
+const moreStuff = require("./moreStuff.js");
+
+app.get('/', (req,res) => { res.send("This is the default route!")});
+
+// You can access the /double router simply doing (localhost:3000/double)
+// This can be used multitude way of handling many requests while also providing our client-side / server-side to listen on specific route.
+
+app.get('/double', (req,res) => { res.send("Here's our second route!")});
+
+
+
+app.post('/double', (req,res) => { res.send("Hey you used POST method for this route!")});
+
+
+
+// If a user sends a GET request to '/hello', the server will respond with "Hello World!" because it's the callback function associated with the app.get('/hello', ...) route that is triggered for GET requests to '/hello'.
+// This .post() and .get() is a different way of handling our HTTP. It'll correspond for each .send() accordingly, based on what users use.. (POST / GET).. It's also the same for (PUT and DELETE)
+
+// On the other hand, if a user sends a POST request to '/hello', the server will respond with "You just called the post method at '/hello'!\n" because this time, it's the callback function associated with the app.post('/hello', ...) route that is triggered for POST requests to '/hello'.
+
+// To actually view this output, use curl -X POST "http://localhost:3000/double" And see the result. The console would display res.send("Hey you used POST method for this route!") since it handles the POST method.
+// But differs when it comes to GET. 
+
+app.use('/moreStuff', moreStuff);
+
+// Additional note: We can still handle our original http request, this just sets up a mini route for its own while making it accesible for us.
+
+/*
+The app.use function call on route '/moreStuff' attaches the moreStuff router with this route. Now whatever requests our app gets at the '/moreStuff', 
+will be handled by our moreStuff.js router. The '/' route in moreStuff.js is actually a subroute of '/moreStuff'.
+*/
+
+app.listen(3000);
+
+
+// Here's our moreStuff.js code!
+
+const express = require('express')
+
+const router = express.Router();
+
+/*
+you create an instance of express.Router() and store it in the variable router. 
+This router is like a mini Express app that can handle its own routes.
+*/
+
+router.get('/', (req,res) => {
+    res.send("This is our newly made default route!")
+})
+
+router.post('/', (req,res) => {
+    res.send('Still the same!!');
+
+})
+
+
+module.exports = router;
+
+/* 
+The module.exports = router; line exports the router object as a module. 
+This means that you can import and use this module in other files by requiring it.
+*/
+
