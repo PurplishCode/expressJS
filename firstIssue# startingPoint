@@ -1,0 +1,30 @@
+const express = require('express'); // We import our express from our node module, then assigning it into our variable express.
+
+const listen = express(); // listen variable will hold the express value.
+
+const PORT = 3000; // The default port for Express is 3000. It's used for our express to 'listen' upon our server port.
+
+// It's basically setting up our backend into port 3000, so our client-side (using axios) can take / give request into that PORT.
+
+
+// There are many ways of this method.. Let's say, our listen variable will GET the specified route. (Our default route will be '/', but then again..
+// we can also invoke (/create) different PATH for our server/client-side to listen.. It's quite convenience IF you have multiple get request with different pattern. )
+// This function tells what to do when a get request at the given route is called. The callback function has 2 parameters, request(req) and response(res). The request object(req) represents the HTTP request and has properties for the request query string, parameters, body, HTTP headers, etc. Similarly, the response object represents the HTTP response that the Express app sends when it receives an HTTP request.
+
+// There are many http request we can do.. Such as (POST, PUT, DELETE) similarly like CRUD but Http!
+listen.get('/', (req, res) => {
+    res.send("Sending..");
+})
+
+// When someone makes a GET request to the '/login' route, the server will respond by sending back the message "Sending..". The "req" object will contain any relevant information about the request 
+// (which could be useful if you needed to process the request further), and the "res" object will be used to send the response back to the client.
+
+listen.listen(PORT)
+
+
+
+// Cool Tips.. This is how you terminate PORT (PID) that's already in-use.
+// netstat -ano | findstr :3000
+// taskkil /PID [Your PID number] /F
+
+// Hey future me, use npm run! Since our starting prompt on this folder is nodemon (configured inside the package.json).
