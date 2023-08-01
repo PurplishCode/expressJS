@@ -1,0 +1,87 @@
+// HTTP Method!
+const express = require('express');
+
+const app = express();
+
+const PORT =  3000;  
+
+app.get('/', (req,res) => {
+    res.send('Original Port.')
+})
+
+app.post('/postMe', (req,res) => {
+    res.send("You've sent POST method on this /postMe Url!")
+})
+
+app.put('/putMe', (req, res) => {
+    res.send(`You've sent PUT method on this /putMe url on http://localhost:${PORT}!`)
+})
+
+app.listen(PORT)
+
+// Let's explain the 4 pillarsmen of each method. (Widely used.)
+
+// - GET -
+
+/*
+.get() basically retrives any Data on specific URL, it's best not to interfere or made any modifications for its use. 
+Basically only observing without making any changes!
+
+Code EXAMPLE:
+
+app.get('/hills' (req,res) => {
+    res.send('Look at those beautiful hills!!')
+})
+
+*/
+
+// - POST -
+
+/*
+
+.post() is basically sending a request of newly-made object / data into the server.
+If it accepts, then the server would create the requested data into entity / object. 
+
+It's like sending a request to the server, saying, "Hey, I've designed this new object. 
+Can you please create it for me?" If the server agrees, it will build your new object and keep it safe.
+
+Code EXAMPLE:
+
+// The specific url / route is basically where our POST respond is sent into.
+
+When someone makes a POST request to your server at the URL '/toyFactory', the code inside the handler will be executed.
+
+app.post('/toyFactory', (req,res) => {
+    // Your code logic of adding the TOY into our toyFactory.. (Basically how the POST method will work, processing data, etc.)
+    res.send('Toy has succesfully been created in toyFactory url!')
+})
+
+*/
+
+// - PUT -
+
+/*
+
+.put() Basically If user sent an entirely-updated data for that specific object, it'll ask for the server
+to replace it with the newly-updated one. But if that specific object don't exist, it'll create one for you.
+
+CODE EXAMPLE:
+
+app.put('/update-Toy', (req,res) => {
+    // Your logic flow of updating the Toy.
+   res.send("You've updated your TOY into the update-Toy URL!")
+})
+*/
+
+// - DELETE -
+/*
+.delete() Basically if user requested that specific object / data to be deleted, it'll send the request into our server.
+If server accepted, it'll respond by deleting that object / data.
+
+Code EXAMPLE: 
+
+app.delete('/delete-Toy', (req, res) => {
+    // Your logic flow of deleting the Toy.
+   res.send("You've deleted your TOY from the delete-Toy URL!");
+
+*/
