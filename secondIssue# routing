@@ -11,14 +11,19 @@ app.get('/', (req,res) => { res.send("This is the default route!")});
 // You can access the /double router simply doing (localhost:3000/double)
 // This can be used multitude way of handling many requests while also providing our client-side / server-side to listen on specific route.
 
-app.get('/double', (req,res) => { res.send("Here's our second route!")});
 
 
+// This is a special method! .all()
+/*
+A special method, all, is provided by Express to handle all types of http methods
+ at a particular route using the same function.
 
-app.post('/double', (req,res) => { res.send("Hey you used POST method for this route!")});
+ */
+app.all('/double', (req,res) => { res.send("Any HTTP method won't affect this!")})
 
+app.post('/double', (req, res) => { res.send("POST?")});
 
-
+app.get('/double', (req,res) => { res.send('Pleasessss')});
 // If a user sends a GET request to '/hello', the server will respond with "Hello World!" because it's the callback function associated with the app.get('/hello', ...) route that is triggered for GET requests to '/hello'.
 // This .post() and .get() is a different way of handling our HTTP. It'll correspond for each .send() accordingly, based on what users use.. (POST / GET).. It's also the same for (PUT and DELETE)
 
@@ -39,7 +44,7 @@ will be handled by our moreStuff.js router. The '/' route in moreStuff.js is act
 app.listen(3000);
 
 
-// Here's our moreStuff.js code!
+// Here's our moreStuff.js!
 
 const express = require('express')
 
@@ -66,4 +71,5 @@ module.exports = router;
 The module.exports = router; line exports the router object as a module. 
 This means that you can import and use this module in other files by requiring it.
 */
+
 
