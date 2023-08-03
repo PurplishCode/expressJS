@@ -1,0 +1,81 @@
+#! MiddleWare function!
+
+const express = require('express');
+
+
+
+const app = express();
+
+
+const PORT = 3000;
+
+// We'll use ths code-chain for our middleware on '/' url (The default URL), if users attempt to use HTTP method, it'll display console.log then we'll continue the
+// middleware chain onto the next one. ( Using next(); )
+
+// In this example, we'll first invoke our middleware function to check if USERS logged in or not.
+
+app.use('/letsTry', function(req,res,next) {
+ 
+ req.userLoggedin = true;
+
+    next();
+})
+
+// To access throughout our parameters from any middleware, we'll use req object! So within our req.user, we'll pass it onto another middleware function
+// Which will validate the user if it's true or not,
+app.use('/letsTry', function(req,res,next) {
+    if(req.userLoggedin) {
+        console.log('Users logged in!')
+        next();
+    } else {
+        console.log("Users not logged in.")
+    }
+})
+// Then within our second middleware chain (Or specifically, the route handlers.) We'll send a respond towards the client for http method (GET) into '/letsTry' url.
+// Which we'll continue into the last middleware chain (If there's any)
+// NOTICE: We can only send one respond for that SPECIFIC url to client.
+app.get('/letsTry', (req,res) => {
+    res.send("Welcome to the site, logged user!");
+   
+})
+
+// At last, since we're not chaining any middleware function anymore, we don't have to specifically write the next parameters nor arguments.
+
+
+app.listen(PORT);
+
+// // Another basic example of using middleware function.
+
+
+// const express = require('express')
+
+// const app = express();
+
+
+// const PORT = 3000;
+
+
+// // After invoking the http methods (GET), it'll stop at that point. Since we've sent a respond to our client.
+
+// app.use('/', function(req,res, next) {
+// console.log('First');
+//     next();
+// })
+
+// app.get('/', (req,res, next) => {
+//     res.send('Middle');
+//  next();
+// });
+
+// app.use('/', (req,res) => {
+//     console.log('Final');
+// })
+
+// app.listen(PORT);
+
+// /*
+// Remember, the order of middleware matters, and they should be arranged based on their functionalities and dependencies. 
+// Middleware allows you to add functionality in a modular way, 
+// making it easier to manage your application's behavior for different routes and scenarios.
+
+// */
