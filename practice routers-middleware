@@ -1,0 +1,34 @@
+const express = require('express');
+
+const app = express();
+
+
+const PORT = 3000;
+
+const loginRouter = express.Router();
+
+loginRouter.use('/', (req,res,next) => {
+    req.user = true;
+   req.password = true;
+    
+    next();
+});
+
+loginRouter.use('/', (req,res,next) => {
+    if(req.user && req.password) {
+        console.log('Users logged in!');
+        next();
+    } else {
+        console.log("Users not logged in..");
+    res.status(401).send('Nonono!');
+    }
+})
+
+loginRouter.get('/', (req,res) => {
+    res.send("Welcome back!");
+})
+
+
+app.use("/login", loginRouter);
+
+app.listen(PORT);
