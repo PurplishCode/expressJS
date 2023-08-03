@@ -1,0 +1,25 @@
+// Dynamic Route!
+
+// We mostly define our route with fixed or static. But how about giving the parameters into the URL, which will automatically sent res based on its parameters?
+// Well! Using req parameters is possible.
+
+
+const express = require('express'); // Taking the express module then initialized it into our express variable.
+
+
+const app = express(); // app will hold the express() value.
+
+const PORT = 3000; // The PORT our server would listen to.
+
+
+// You can use the req.params object to access all the parameters you pass in the url.. (Don't forget to use ":" to pass in your parameters.)
+app.get('/:id', (req,res) => {
+    res.send("Hello! " + req.params.id)
+})
+
+
+
+app.listen(PORT)
+
+
+// COOL-TIPS:  Express matches routes from start to end of the index.js file, including the external routers you required.
