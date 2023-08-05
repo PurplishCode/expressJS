@@ -1,0 +1,40 @@
+/*  */
+
+const express = require('express');
+const items = require('./routers/items');
+
+// We imported serve-index module. (Contains built-in middleware.) It gives us the listing of our files depending on that specific directory.
+// Just "npm install serve-index" to install it.
+const serveIndex = require('serve-index');
+
+const PORT = 3000;
+
+const app = express();
+
+// Middleware function, since we don't specify any new endpoint,
+// we'll just pass in paremeters.. This'll continue the next() line towards our app.get() The only middleware / http method presented.
+// Each time users made GET request on the default PORT, it'll display our current timestamp inside the terminal.
+app.use((req,res,next) => {
+    console.log("TIME: ", Date.now());
+    next();
+})
+
+app.get('/', (req,res) => {
+    res.send("ST");
+})
+
+//This uses our '/public' dependency to create the static then serveIndex.
+app.use('/public', express.static('public'));
+app.use('/public', serveIndex('public'));
+app.listen(PORT);
+
+// app.post('/post-item', (req,res) => {
+//     res.send("You posted something,");
+// })
+
+
+// app.use('/api', items);
+
+// app.listen(PORT, () => {
+//     console.log(`Server is running on http://localhost:${PORT}`)
+// })
