@@ -1,0 +1,84 @@
+// Here's our models folder, handling the mongodb connection and rendering its model / schema: 
+
+// We imported our dotenv module while also configuring it.
+require('dotenv').config();
+
+const mongoose = require('mongoose');
+
+mongoose.connect(process.env.MONGO_URL, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true
+}).then(() => console.log('It connected!')).catch(() => console.log("sTILL DONT workrkr"));
+
+const schemaBook = mongoose.Schema({
+    title: String,
+    description: String
+})
+
+
+/*
+Remember, if you don't specify a collection name using the third argument in mongoose.model(), Mongoose will use the pluralized and lowercase version of the model name as the default collection name.
+
+*/
+
+const book = mongoose.model('newBook', schemaBook , 'bookStore')
+
+// Exporting the module, so it can be used globally.
+module.exports = book;
+
+// Now here's our routers for handling the HTTP Method, in this case we're only practicing HTTP POST.
+
+const express = require('express');
+
+const router = express.Router();
+
+const Book = require('../models/book');
+
+router.post('/post-book', async(req,res) => {
+    const { title, description } = req.body
+   try {
+    const takeBook = new Book({
+    title,
+    description
+   })
+   await takeBook.save();
+res.status(201).json({message: "Succesful!"});
+   }catch(error){
+   res.status(500).json({error: "Failed."});
+   }
+})
+
+
+module.exports = router;
+
+// At last, our index file. This acts as our entry-point for every http request we made. Our server will explicitly listens to this,
+// We imported our dotenv module while also configuring it.
+require('dotenv').config();
+
+const express = require('express');
+// We dont necesarily have to import our models folder (our schema/model) into index.js, since our routers (books.js) already handled it.  
+const booksApi = require('./routers/books')
+const app = express();
+
+app.use(express.json());
+
+// To actually send our POST method into '/post-book' endpoint, we'll use POSTMAN API built-in tools.
+// Enter URL Endpoint (http://localhost:3000/api/post-book), 
+// Click on the "Body" tab below the URL field.
+
+// Select the "raw" option.
+
+// Choose "JSON (application/json)" from the dropdown.
+
+app.use('/api', booksApi)
+
+
+app.listen((process.env.PORT), () => {
+console.log("Application is listening on http://localhost:3000")
+})
+
+// HOLD ON! You might be wondering, what're the process.env means!? Well, it's actully from our environment variable. We don't have to hard-write our code (specifically MONGODB_URL and PORT) //
+// Here's the .env file!
+MONGO_URL =mongodb://127.0.0.1:27017/newBook
+PORT =3000
+# To invoke each line of these variable, we'll use process.env.(nameOfVariable) on specific point.
