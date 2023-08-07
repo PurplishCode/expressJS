@@ -1,0 +1,83 @@
+require('dotenv').config();
+ /* Request (req) obj */
+
+/* 
+Express servers receive data from the client side through the req object 
+ in three instances: 
+the req.params, req.query, and req.body objects.
+*/
+
+
+ const express = require('express');
+
+ const app = express();
+
+ 
+
+// Importing subrouters then define it as search.
+const search = require('./routers/search');
+ app.use('/search', search)
+
+// The req.params object captures data based on the parameter specified in the URL.
+ // Starts with req.params then our parameter.
+ // app.get('/:id', (req,res) => {
+ //     res.send(req.params.id);
+ // })
+
+ /* Basic example of req.query */ 
+ // Utilizing the req.query object matches data loaded from the client side in a query conditional. 
+// In this case, the GET request to the '/search' route informs Express to match keywords in the search query.
+search.get('/', (req,res) => {
+   console.log(req.query.keyword);
+ }),
+
+ // Within your webpage, to actually view this result. Type in /search?keyword=(typeInSomething) and it'll display your keyword into the terminal.
+
+ /* Basic example of req.body */
+ // The req.body object allows you to access data in a string or JSON object from the client side. 
+// You generally use the req.body object to receive data through POST and PUT requests in the Express server.
+
+// Think of this as client-side request into our /login endpoint.
+//  {
+ //      "email": "darell@gmail.com",
+//      "password": "helloworld"
+//  },
+
+ // Think of it like this: If the client-side sent a specific value for our server-side to handle, we'll have to explicitly inform the server-side which values to perform.
+ // Similarly, it's like sending a gift-box to someone, thus they (server-side) unwrap the present and revealed the value! (client-side's value)
+ app.post('/login', (req,res) => {
+     console.log(req.body.email) // darell@gmail.com
+     console.log(req.body.password) // helloworld
+ })
+
+ // When a user inputs their email and password on the client side, 
+ // the req.body object stores that information and sends it to your Express server. 
+
+// Properties of req object can also return the parts of an URL based of its anatomy.
+
+app.get('/test', (req,res) => {
+    console.log(req.protocol); // The protocols, http.
+    console.log(req.hostname); // Host name, in this context localhost.
+    console.log(req.path); // Our URL endpoint
+})
+/*
+You can access various parts of the URL using 
+built-in properties such as .protocol and .hostname */
+
+// To access our current HTTP Method, we'll use req.method (This'll only log our HTTP Method we currently using on this anonymous endpoint '/')
+app.get('/', (req,res) => {
+    console.log(req.method);
+})
+
+// We can access specific headers of our URL, it can return header type such as Content-Type and Authorization.
+// The argument for req.header('header-type') is case-sensitive.
+app.post('/headerLogin', (req,res) => {
+    req.header('Content-Type') // "application/json"
+    req.header('user-agent') // 
+   req.header('Authorization') // "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9..."
+})
+// For headers sent into your server, append the method .header() to your req object. 
+
+ app.listen(process.env.PORT, () => {
+     console.log('Server is listening.');
+ })
