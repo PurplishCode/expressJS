@@ -1,0 +1,98 @@
+require('dotenv').config();
+
+// Don't forget to import path module.
+const path = require('path');
+
+const express = require('express');
+const { log } = require('console');
+
+const app = express();
+
+
+// The .send() method on the res object forwards any data passed as an argument to the client-side. 
+// The method can take a string, array, and an object as an argument.
+// Client side sent request towards endpoint '/login'
+
+// We'll send arguments of string ("This sent anything") into the URL endpoint '/listenMe'
+// The res object can also specify the HTTP status code with the .status() method.
+
+/*
+res.sendStatus(200); // equivalent to res.status(200).send('OK') 
+res.sendStatus(403); // equivalent to res.status(403).send('Forbidden') 
+res.sendStatus(404); // equivalent to res.status(404).send('Not Found') 
+res.sendStatus(500); // equivalent to res.status(500).send('Internal Server Error')
+*/
+
+
+app.get('/listenMe', (req,res) => {
+   res.sendStatus(200);
+   
+})
+
+// To define a header into our server response, apply the .append() into your url endpoint. we'll pass in header as our first argument and a value as the second in our call .append() method.
+app.get('/', (req,res) => {
+    // We mostly checks the alteration with POSTMAN API, quite convenient.
+
+    res.append('Content-Type', 'application/javascript; charset=UTF-8') // Here's a brief examples. There's two arguments. First our headers then the value of our append.
+    res.append('Connection', 'keep-alive');
+    res.append('Content-Length', '5089990');
+    res.status(200).send("This works!")
+})
+
+// Let's talk about .redirect(), .render(), .end() method!
+
+// The redirect method will direct the client-side into different webpages (access required)
+// Let's say users input their login credentials on the client-side, then they'll be directed based on what're their privileges on that specific webpage.
+
+app.get('/loginAdmin', (req,res) => {
+
+    res.redirect('/adminpage/dashboard');
+    res.sendStatus(200)
+
+})
+
+// .redirect() will also DIRECT the client into that specific url whether it'll be IN the Client-side or Server-side.
+app.get('/adminpage/dashboard', (req,res) => {
+    res.send("Welcome Admin! You've been directed on the Server-side.")
+})
+
+// Alright moving on, .render() method accepts an HTML file as an argument and sends it into the client-side.
+// The method also accepts an optional second argument, a locals object, with costum properties to define the file sent to the client-side.
+app.get('/renderMe', (req,res) => {
+    res.render('render.html', {status: 'good'});
+})
+
+// The .end() method will terminate the response cycle. It is recommended to use the .end() method as the last call in your response to the client-side.
+// We can also chain the .end() method with others.
+app.get('/errorFound', (req,res) => {
+    res.sendStatus(404).end();
+})
+// The .end() method will complete the response once the status (404) is sent into our client-side.
+
+// Now.. Let's see how we handle files with res object.
+// First thing, we'll use dynamic parameters. (To access that params, use req.params.(nameOfRoute) ), now 3 parameters of our arrow function expression wil be request object,
+// respond object, and next method.
+// the variable options takes an object and the public directory as the value in a call to path.join() to serve as an absolute path. (Basically directing towards that specific file is considered as absolute path.)
+// Afterwards, our :fileName will act as its absolute path (So each time our dynamic route is inputted with an existing file, it'll display that path(file) into the client-side / server-side ), we'll also invoke the option variable as second argument. Then optionally handles the error (if there's any occurences of it) with third arguments, callback.
+app.get('/galleryImage/:fileName', (req,res,next) => {
+    var option = {
+        root: path.join(__dirname, 'public')
+    }
+    res.sendFile(req.params.fileName, option, (err) => {
+        if(err) next(err); else console.log("File sent", req.params.fileName);
+    })
+})
+
+// But how about downloading files with res object?
+// First, as usual we'll invoke the dynamic params of fileName, then we'll create file variables. It's consisted of the directory name (__dir), into the public folder and finally its file (If there's an existing one)
+app.get('/galleryDownloadImg/:fileName', (req,res) => {
+    const file =  `${__dirname}/public/${req.params.fileName}`
+
+    res.download(file);
+
+})
+// This output will download that specific file (In this case, we'll use an .jpeg instead) based on what existing fileName.
+
+app.listen(process.env.PORT, () => {
+console.log('Server is listening..');
+})
