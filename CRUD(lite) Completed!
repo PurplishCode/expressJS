@@ -1,0 +1,102 @@
+// SCHEMA / MODEL for FOOD database
+require('dotenv').config();
+const mongoose = require('mongoose')
+
+
+mongoose.connect(process.env.MONGO_URL, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+    
+}).then(() => { console.log("Connected!")}).catch((error) => { console.log("Cannot connect.", error)})
+
+const FoodSchema = new mongoose.Schema({
+    name: {
+        type: String,
+       required: true,
+       trim: true,
+      lowercase: true
+    },
+    calories: {
+    type: String,
+    default: 0,
+    validate(value) {
+        if(value < 0) throw new Error({message: "The food is a myth!"});
+    }  
+
+    }
+
+})
+
+const Food = new mongoose.model("FoodSchema", FoodSchema, "item");
+
+module.exports = Food;
+// ROUTER API for FOOD
+
+const express = require('express');
+const Food = require('../model/server');
+
+const router = express.Router();
+
+// GET method (R)
+router.get('/showMenu', async (req,res) => {
+try{
+    const food = await Food.find({})
+res.send(food);
+}catch(error) {
+    console.log(error)
+}
+
+})
+
+// POST method (C)
+router.post('/inputItem', async (req,res) => {
+    try{const food = await new Food(req.body);
+   await food.save();
+
+   res.send("SUCCESFUL!")
+    }catch(error) {
+        console.log(error)
+    }
+    })
+// PATCH method (U)
+    // We have to manually input the dynamic parameters with _ObjectID indentifiers provided by MONGODB.
+    router.patch('/updateItem/:id', async (req,res) => {
+        try{
+        const food = await Food.findByIdAndUpdate(req.params.id, req.body);
+    res.send(food)    
+    }catch(error) {
+            console.log(error);
+        }
+      
+    })
+
+    // DELETE method (D)
+    router.delete('/deleteItem/:id', async (req,res) => {
+        try{
+      const food = await Food.findByIdAndDelete(req.params.id);
+
+      res.send(food)
+        }catch(error){
+console.log(error)
+        }
+    })
+
+    // Check the output with POSTMAN API
+module.exports = router;
+
+// INDEX FILE FOR FOOD
+require('dotenv').config();
+
+const express = require('express');
+const app = express();
+const router = require('./routers/foodapi')
+
+// We'll perform some CRUD-based with only EXPRESS (+ MongoDB) There'll be no client-side request yet.
+app.use(express.json());
+
+app.use('/foodapi', router);
+
+app.listen(process.env.PORT, () => {
+    console.log("It's listening in http://localhost:3000");
+});
+
